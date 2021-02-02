@@ -1,21 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {Component} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import SignUp from './src/screens/SignUpScreen';
+import LogIn from './src/screens/LogInScreen';
+import ContactsScreen from './src/screens/ContactsScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+export default class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      name:"",
+      phone:""
+    }
+    
+  }
+  render(){
+    return (
+      <View style={styles.container}>
+         <ContactsScreen/>
+      </View>
+    );
+  }
+  
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop:80,
+    marginHorizontal:20
   },
 });
