@@ -2,6 +2,8 @@ import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {MaterialIcons, MaterialCommunityIcons, SimpleLineIcons} from '@expo/vector-icons';
 
+
+
 export default function Contact({name, phone}) {
     return (
         <View style={styles.container}>

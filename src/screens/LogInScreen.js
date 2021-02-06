@@ -1,21 +1,33 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {connect} from 'react-redux';
+import {logInEmailAccount} from '../redux/actions/authActions';
 
 
-export default class LogIn extends Component{
+class LogIn extends Component{
   constructor(props){
     super(props)
     this.state = {
-      username:"",
       email:"",
       password:"",
-      password2:""
 
     
     }
   }
-  render(){
+
+  handleUpdateText=(name,value)=>{
+     this.setState({
+       [name]:value
+     })
+  }
+
+  handleOnSubmit=()=>{
+    this.props.logInEmailAccount(this.state.email, this.state.password)
+       
+    }
     
+  render(){
+    const {navigation, auth} = this.props
     return (
       <View>
     
@@ -24,16 +36,17 @@ export default class LogIn extends Component{
       </View>
        
     <View style={styles.inputContainer}>
+
+    { auth.error.login &&
+      <Text style={{color:'red'}}>{auth.error.login}</Text>}
       
       <TextInput style={styles.input}
       placeholder="Email"
       autoCapitalize="none"
       autoCorrect={false}
       value={this.state.email}
-      onChangeText={(email)=>{
-        this.setState({email})
-      }}
-      />
+      onChangeText={(text)=>{(this.handleUpdateText('email',text))}}/>
+      
 
       <TextInput style={styles.input}
       placeholder="Password"
@@ -41,28 +54,24 @@ export default class LogIn extends Component{
       autoCorrect={false}
       secureTextEntry={true}
       value={this.state.password}
-      onChangeText={(password)=>{
-        this.setState({password})
-      }}
-      />
-    
+      onChangeText={(text)=>{(this.handleUpdateText('password',text))}}/>
     </View>
         
     <View>
-        <TouchableOpacity style={styles.opacity}>
+        <TouchableOpacity onPress={this.handleOnSubmit} style={styles.opacity}>
            <Text style={styles.opacityText}>Log in</Text>
         </TouchableOpacity>
     </View>
 
     <View style={styles.accountContainer}>
       <Text style={styles.accountText}>Don't have an account?</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate("Signup")}>
           <Text style={styles.signUp}>Sign up</Text>
       </TouchableOpacity>
       
     </View>
     
-      </View>
+      </View> 
     ); 
   }
 }
@@ -126,3 +135,13 @@ const styles = StyleSheet.create({
     marginLeft:5
   }
 });
+
+
+const mapStateToProps = (state) => {
+  return {
+     auth:state
+  }
+}
+
+
+export default connect(mapStateToProps,{logInEmailAccount})(LogIn);

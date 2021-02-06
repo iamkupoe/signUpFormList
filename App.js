@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import SignUp from './src/screens/SignUpScreen';
-import LogIn from './src/screens/LogInScreen';
-import ContactsScreen from './src/screens/ContactsScreen';
+import {Provider} from 'react-redux';
+import {store, persistor} from './src/redux/store';
+import AppContainer from './src/navigation/navigation';
+import {PersistGate} from 'redux-persist/integration/react';
+
 
 export default class App extends Component {
   constructor(props){
@@ -15,18 +16,12 @@ export default class App extends Component {
   }
   render(){
     return (
-      <View style={styles.container}>
-         <ContactsScreen/>
-      </View>
+      <Provider store={store}>
+         <PersistGate loading={null} persistor={persistor}>
+            <AppContainer/> 
+         </PersistGate>
+      </Provider>
     );
   }
   
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop:80,
-    marginHorizontal:20
-  },
-});

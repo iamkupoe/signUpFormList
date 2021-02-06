@@ -1,21 +1,38 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {connect} from 'react-redux';
+import {createEmailAccount, registerError} from '../redux/actions/authActions';
 
 
-export default class SignUp extends Component{
+class SignUp extends Component{
   constructor(props){
     super(props)
     this.state = {
       username:"",
       email:"",
       password:"",
-      password2:""
+      confirm:""
 
     
     }
   }
+
+  handleUpdateText=(name,value)=>{
+     this.setState({
+       [name]:value
+     })
+  }
+
+  handleOnSubmit=()=>{
+    if (this.state.password!==this.state.confirm){
+        this.props.registerError("Passwords do not match")
+        return;
+    }
+    this.props.createEmailAccount(this.state.email, this.state.password)
+  }
   render(){
     
+    const {auth} = this.props
     return (
       <View>
     
@@ -24,25 +41,25 @@ export default class SignUp extends Component{
       </View>
        
     <View style={styles.inputContainer}>
+
+      { auth.error.register &&
+        <Text style={{color:'red'}}>{auth.error.register}</Text>}
+      
       <TextInput style={styles.input}
       placeholder="Username"
       autoCapitalize="none"
       autoCorrect={false}
       value={this.state.username}
-      onChangeText={(username)=>{
-        this.setState({username})
-      }}
-      />
+      onChangeText={(text)=>{(this.handleUpdateText('username',text))}}/>
+      
 
       <TextInput style={styles.input}
       placeholder="Email"
       autoCapitalize="none"
       autoCorrect={false}
       value={this.state.email}
-      onChangeText={(email)=>{
-        this.setState({email})
-      }}
-      />
+      onChangeText={(text)=>{(this.handleUpdateText('email',text))}}/>
+      
 
       <TextInput style={styles.input}
       placeholder="Password"
@@ -50,33 +67,27 @@ export default class SignUp extends Component{
       autoCorrect={false}
       secureTextEntry={true}
       value={this.state.password}
-      onChangeText={(password)=>{
-        this.setState({password})
-      }}
-      />
+      onChangeText={(text)=>{(this.handleUpdateText('password',text))}}/>
 
       <TextInput style={styles.input}
-      placeholder="Password again"
+      placeholder="Confirm"
       autoCapitalize="none"
       autoCorrect={false}
       secureTextEntry={true}
-      value={this.state.password2}
-      onChangeText={(password2)=>{
-        this.setState({password2})
-      }}
-      />
+      value={this.state.confirm}
+      onChangeText={(text)=>{(this.handleUpdateText('confirm',text))}}/>
     
     </View>
         
     <View>
-        <TouchableOpacity style={styles.opacity}>
-           <Text style={styles.opacityText}>Signup</Text>
+        <TouchableOpacity onPress={this.handleOnSubmit} style={styles.opacity}>
+           <Text style={styles.opacityText}>Sign up</Text>
         </TouchableOpacity>
     </View>
 
     <View style={styles.accountContainer}>
       <Text style={styles.accountText}>Already have an account?</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>this.props.navigation.navigate("Login")}>
          <Text style={styles.signUp}>Log in</Text>
       </TouchableOpacity>
       
@@ -146,3 +157,11 @@ const styles = StyleSheet.create({
     marginLeft:5
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+     auth:state
+  }
+}
+
+export default connect(mapStateToProps,{createEmailAccount, registerError}) (SignUp);
